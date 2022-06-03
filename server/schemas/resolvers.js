@@ -30,14 +30,14 @@ const resolvers = {
       const isCorrectPassword = await user.isCorrectPassword(password);
 
       if (!isCorrectPassword) {
-        throw new AuthenticationError("Incorrecct credentials");
+        throw new AuthenticationError("Incorrect credentials");
       }
       const token = signToken(user);
       return { token, user };
     },
     saveBook: async (parent, { book }, context) => {
       if (context.user) {
-        await User.findOneAndUpdate(
+        return User.findOneAndUpdate(
           { _id: context.user._id },
           {
             $addToSet: {
@@ -48,6 +48,21 @@ const resolvers = {
       }
       throw new AuthenticationError("You need to be logged in!");
     },
+  },
+  removeBook: async (parent, { bookId }, context) => {
+    if (!context.user) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+    return User.findOneAndUpdate(
+      { _id: context.user._id },
+      {
+        $pull: {
+          savedBooks: {
+            _id: bookId,
+          },
+        },
+      }
+    );
   },
 };
 
