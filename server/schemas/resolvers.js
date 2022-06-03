@@ -43,26 +43,28 @@ const resolvers = {
             $addToSet: {
               savedBooks: { ...book },
             },
-          }
+          },
+          { new: true }
         );
       }
       throw new AuthenticationError("You need to be logged in!");
     },
-  },
-  removeBook: async (parent, { bookId }, context) => {
-    if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
-    }
-    return User.findOneAndUpdate(
-      { _id: context.user._id },
-      {
-        $pull: {
-          savedBooks: {
-            _id: bookId,
+    removeBook: async (parent, { bookId }, context) => {
+      if (context.user) {
+        return User.findOneAndUpdate(
+          { _id: context.user._id },
+          {
+            $pull: {
+              savedBooks: {
+                _id: bookId,
+              },
+            },
           },
-        },
+          { new: true }
+        );
       }
-    );
+      throw new AuthenticationError("You need to be logged in!");
+    },
   },
 };
 
