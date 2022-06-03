@@ -2,3 +2,4 @@
 .Trashes
 node_modules/
 ignore/
+build/
