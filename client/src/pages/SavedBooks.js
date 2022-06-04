@@ -7,7 +7,6 @@ import {
   Button,
 } from "react-bootstrap";
 
-import { deleteBook } from "../utils/API";
 import Auth from "../utils/auth";
 import { removeBookId } from "../utils/localStorage";
 
@@ -46,11 +45,16 @@ const SavedBooks = () => {
     }
 
     try {
-      const { updatedUser } = await removeBook({
-        variables: bookId,
+      const tmpUserData = { ...userData };
+      console.log("bookID: ", bookId);
+      const { data } = await removeBook({
+        variables: { bookId },
       });
-
-      setUserData(updatedUser);
+      const { savedBooks } = data.removeBook;
+      console.log("removedata: ", removeData);
+      console.log("updated books: ", savedBooks);
+      tmpUserData.savedBooks = savedBooks;
+      setUserData(tmpUserData);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
