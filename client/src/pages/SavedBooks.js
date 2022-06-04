@@ -23,7 +23,11 @@ const SavedBooks = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      setUserData(data.me);
+      try {
+        setUserData(data.me);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     getUserData();
